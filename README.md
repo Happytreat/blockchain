@@ -1,8 +1,24 @@
-# Learn Blockchains by Building One
+# Credits to Building a Blockchain by @dvf
 
-[![Build Status](https://travis-ci.org/dvf/blockchain.svg?branch=master)](https://travis-ci.org/dvf/blockchain)
+The post on [Building a Blockchain](https://medium.com/p/117428612f46) has inspired me to work on building a more realistic and secure  blockchain on Python based on @dvf/blockchain Github (this repo is also forked from @dvf/blockchain).
 
-This is the source code for my post on [Building a Blockchain](https://medium.com/p/117428612f46). 
+Future goals will be to implement anonymous transactions - refer to Zcash shielded transactions. 
+
+# Whats New
+### Done
+- Add Miner Node to periodically mine for blocks 
+
+### In progress (in no particular order)
+- Add Wallet API for users to add new transaction to node (currently use Postman to add transaction)
+- Add Wallet API to calculate total amount associated per address (track address that belong to user)
+- Implement broadcasting mechanism to peer nodes when new transaction added
+- Fix MAX_TRANSACTIONS per block 
+- Implement Secure Transactions
+- Implement a persistent database to store blockchain for node
+- Decreasing reward function for miners
+
+#### Disclaimer
+The repo work primarily on the Python folder (C# and Js files are forked from @dsf/blockchain)
 
 ## Installation
 
@@ -47,19 +63,29 @@ $ docker run --rm -p 82:5000 blockchain
 $ docker run --rm -p 83:5000 blockchain
 ```
 
-## Installation (C# Implementation)
+## Testing
 
-1. Install a free copy of Visual Studio IDE (Community Edition):
-https://www.visualstudio.com/vs/
+1. Make sure [nose](https://nose.readthedocs.io/en/latest/) is installed.
 
-2. Once installed, open the solution file (BlockChain.sln) using the File > Open > Project/Solution menu options within Visual Studio.
+```
+$ pip install nose
+```
+2. Run tests
+```
+$ cd python
+$ nosetests
+``` 
+You should see something like the following: 
 
-3. From within the "Solution Explorer", right click the BlockChain.Console project and select the "Set As Startup Project" option.
+``` 
+..................................
+----------------------------------------------------------------------
+Ran 8 tests in 0.440s
 
-4. Click the "Start" button, or hit F5 to run. The program executes in a console window, and is controlled via HTTP with the same commands as the Python version.
-
+OK
+``` 
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request/Issue.
 
