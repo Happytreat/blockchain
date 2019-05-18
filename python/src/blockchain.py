@@ -22,16 +22,24 @@ class Blockchain:
         Add a new node to the list of nodes
 
         :param address: Address of node. Eg. 'http://192.168.0.5:5000'
+        :return: True if node is added successfully, False if not
         """
 
         parsed_url = urlparse(address)
+        parsed_node = ""
         if parsed_url.netloc:
-            self.nodes.add(parsed_url.netloc)
+            parsed_node = parsed_url.netloc
         elif parsed_url.path:
             # Accepts an URL without scheme like '192.168.0.5:5000'.
-            self.nodes.add(parsed_url.path)
+            parsed_node = parsed_url.path
         else:
             raise ValueError("Invalid URL")
+
+        if parsed_node not in self.nodes:
+            self.nodes.add(parsed_node)
+            return True
+            
+        return False
 
     def valid_chain(self, chain):
         """
