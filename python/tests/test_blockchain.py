@@ -2,10 +2,8 @@ import hashlib
 import json
 from unittest import TestCase
 
-# TODO: Fix import path for test cases
-# from blockchain import Blockchain
-# target = __import__("../src/blockchain.py")
-# Blockchain = target.Blockchain
+# nosetets will automatically import blockchain
+from blockchain import Blockchain
 
 
 class BlockchainTestCase(TestCase):
@@ -27,14 +25,14 @@ class TestRegisterNodes(BlockchainTestCase):
 
         blockchain.register_node("http://localhost:5000")
 
-        self.assertIn("http://localhost:5000", blockchain.nodes)
+        self.assertIn("localhost:5000", blockchain.nodes)
 
     def test_malformed_nodes(self):
         blockchain = Blockchain()
 
-        blockchain.register_node("http://localhost:5000")
+        blockchain.register_node("http/localhost:5000")
 
-        self.assertNotIn("http://localhost:5000", blockchain.nodes)
+        self.assertNotIn("localhost:5000", blockchain.nodes)
 
     def test_idempotency(self):
         blockchain = Blockchain()
