@@ -64,7 +64,7 @@ def full_chain():
 
 @app.route("/nodes/register", methods=["POST"])
 def register_nodes():
-    values = request.get_json()
+    values = request.get_json(force=True)
 
     nodes = values.get("nodes")
     if nodes is None:
