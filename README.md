@@ -7,11 +7,11 @@ Future goals will be to implement anonymous transactions - refer to Zcash shield
 # Whats New
 ### Done
 - Add Miner Node to periodically mine for blocks 
+- Implement broadcasting mechanism to peer nodes when new transactions added
 
 ### In progress (in no particular order)
 - Add Wallet API for users to add new transaction to node (currently use Postman to add transaction)
 - Add Wallet API to calculate total amount associated per address (track address that belong to user)
-- Implement broadcasting mechanism to peer nodes when new transaction added
 - Fix MAX_TRANSACTIONS per block 
 - Implement Secure Transactions
 - Implement a persistent database to store blockchain for node
