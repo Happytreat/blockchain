@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 import requests
+import api
 from flask import Flask, jsonify, request
 
 
@@ -38,7 +39,7 @@ class Blockchain:
         if parsed_node not in self.nodes:
             self.nodes.add(parsed_node)
             return True
-            
+
         return False
 
     def valid_chain(self, chain):
@@ -134,20 +135,27 @@ class Blockchain:
         self.chain.append(block)
         return block
 
+    def broadcast_new_transaction(self, transaction):
+        pass
+
     def new_transaction(self, sender, recipient, amount):
         """
+        Checks if param provided are non empty objects
         Creates a new transaction to go into the next mined Block
 
         :param sender: Address of the Sender
         :param recipient: Address of the Recipient
         :param amount: Amount
-        :return: The index of the Block that will hold this transaction
+        :return: The index of the Block that will hold this transaction 
+                or False transaction fail to create
         """
-        self.current_transactions.append(
-            {"sender": sender, "recipient": recipient, "amount": amount}
-        )
-
-        return self.last_block["index"] + 1
+        if api.checkNotNull([sender, recipient, amount]):
+            self.current_transactions.append(
+                {"sender": sender, "recipient": recipient, "amount": amount}
+            )
+            return self.last_block["index"] + 1
+        else:
+            raise Exception("Parameters contain a None object.")
 
     @property
     def last_block(self):

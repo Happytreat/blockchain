@@ -18,6 +18,11 @@ class BlockchainTestCase(TestCase):
             sender=sender, recipient=recipient, amount=amount
         )
 
+    def create_invalid_transaction(self, sender=None, recipient="b", amount=1):
+        self.blockchain.new_transaction(
+            sender=sender, recipient=recipient, amount=amount
+        )
+
 
 class TestRegisterNodes(BlockchainTestCase):
     def test_valid_nodes(self):
@@ -65,6 +70,14 @@ class TestBlocksAndTransactions(BlockchainTestCase):
         assert transaction["sender"] == "a"
         assert transaction["recipient"] == "b"
         assert transaction["amount"] == 1
+
+    def test_create_invalid_transaction(self):
+        try:
+            self.create_invalid_transaction()
+        except:
+            pass
+        # Invalid transaction not added
+        assert len(self.blockchain.current_transactions) == 0
 
     def test_block_resets_transactions(self):
         self.create_transaction()

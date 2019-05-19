@@ -48,12 +48,16 @@ def new_transaction():
         return "Missing values", 400
 
     # Create a new Transaction
-    index = blockchain.new_transaction(
-        values["sender"], values["recipient"], values["amount"]
-    )
+    try: 
+        index = blockchain.new_transaction(
+            values["sender"], values["recipient"], values["amount"]
+        )
+        response = {"message": f"Transaction will be added to Block {index}"}
+        return jsonify(response), 201
 
-    response = {"message": f"Transaction will be added to Block {index}"}
-    return jsonify(response), 201
+    except Exception: 
+        response = {"message": "Transaction failed to be created."}
+        return jsonify(response), 422
 
 
 @app.route("/chain", methods=["GET"])
