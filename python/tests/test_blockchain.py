@@ -1,5 +1,6 @@
 import hashlib
 import json
+from time import time
 from unittest import TestCase
 
 # nosetets will automatically import blockchain
@@ -13,14 +14,33 @@ class BlockchainTestCase(TestCase):
     def create_block(self, proof=123, previous_hash="abc"):
         self.blockchain.new_block(proof, previous_hash)
 
-    def create_transaction(self, sender="a", recipient="b", amount=1):
+    def create_valid_transaction(
+        self, sender="a", recipient="b", amount=1, timestamp=time()
+    ):
+        transaction = {
+            "sender": sender,
+            "recipient": recipient,
+            "amount": amount,
+            "timestamp": timestamp,
+        }
         self.blockchain.new_transaction(
-            sender=sender, recipient=recipient, amount=amount
+            sender=sender, recipient=recipient, amount=amount, timestamp=timestamp
+        )
+        return transaction
+
+    def create_transaction(self, transaction):
+        self.blockchain.new_transaction(
+            sender=transaction["sender"],
+            recipient=transaction["recipient"],
+            amount=transaction["amount"],
+            timestamp=transaction["timestamp"],
         )
 
-    def create_invalid_transaction(self, sender=None, recipient="b", amount=1):
+    def create_invalid_transaction(
+        self, sender=None, recipient="b", amount=1, timestamp=time()
+    ):
         self.blockchain.new_transaction(
-            sender=sender, recipient=recipient, amount=amount
+            sender=sender, recipient=recipient, amount=amount, timestamp=timestamp
         )
 
 
@@ -62,7 +82,9 @@ class TestBlocksAndTransactions(BlockchainTestCase):
         assert latest_block["previous_hash"] == "abc"
 
     def test_create_transaction(self):
-        self.create_transaction()
+        self.blockchain.register_node("http://localhost:5000")
+
+        self.create_valid_transaction()
 
         transaction = self.blockchain.current_transactions[-1]
 
@@ -77,10 +99,16 @@ class TestBlocksAndTransactions(BlockchainTestCase):
         except:
             pass
         # Invalid transaction not added
-        assert len(self.blockchain.current_transactions) == 0
+        assert self.blockchain.current_transactions == []
+
+    def test_create_duplicate_transactions(self):
+        transaction = self.create_valid_transaction()
+        self.create_transaction(transaction)
+
+        assert len(self.blockchain.current_transactions) == 1
 
     def test_block_resets_transactions(self):
-        self.create_transaction()
+        self.create_valid_transaction()
 
         initial_length = len(self.blockchain.current_transactions)
 

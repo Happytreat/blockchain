@@ -43,19 +43,19 @@ def new_transaction():
     values = request.get_json()
 
     # Check that the required fields are in the POST'ed data
-    required = ["sender", "recipient", "amount"]
+    required = ["sender", "recipient", "amount", "timestamp"]
     if not all(k in values for k in required):
         return "Missing values", 400
 
     # Create a new Transaction
-    try: 
+    try:
         index = blockchain.new_transaction(
-            values["sender"], values["recipient"], values["amount"]
+            values["sender"], values["recipient"], values["amount"], values["timestamp"]
         )
         response = {"message": f"Transaction will be added to Block {index}"}
         return jsonify(response), 201
 
-    except Exception: 
+    except Exception:
         response = {"message": "Transaction failed to be created."}
         return jsonify(response), 422
 

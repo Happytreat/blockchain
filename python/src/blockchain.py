@@ -136,12 +136,18 @@ class Blockchain:
         return block
 
     def broadcast_new_transaction(self, transaction):
-        pass
+        # Private method to be called when new_transaction is invoked
 
-    def new_transaction(self, sender, recipient, amount):
+        for node in self.nodes:
+            try:
+                requests.post(f"http://{node}/chain", json=json.dumps(transaction))
+            except requests.exceptions.ConnectionError:
+                pass
+
+    def new_transaction(self, sender, recipient, amount, timestamp):
         """
-        Checks if param provided are non empty objects
-        Creates a new transaction to go into the next mined Block
+        Creates and broadcast to peers a new transaction to go into the next mined Block
+        if transaction does not already exist in current_transactions
 
         :param sender: Address of the Sender
         :param recipient: Address of the Recipient
@@ -149,13 +155,19 @@ class Blockchain:
         :return: The index of the Block that will hold this transaction 
                 or False transaction fail to create
         """
-        if api.checkNotNull([sender, recipient, amount]):
-            self.current_transactions.append(
-                {"sender": sender, "recipient": recipient, "amount": amount}
-            )
-            return self.last_block["index"] + 1
+        transaction = {
+            "sender": sender,
+            "recipient": recipient,
+            "amount": amount,
+            "timestamp": timestamp,
+        }
+        if api.checkNotNull([sender, recipient, amount, timestamp]):
+            if transaction not in self.current_transactions:
+                self.current_transactions.append(transaction)
+                self.broadcast_new_transaction(transaction)
+                return self.last_block["index"] + 1
         else:
-            raise Exception("Parameters contain a None object.")
+            raise Exception("Creating transaction failed")
 
     @property
     def last_block(self):
